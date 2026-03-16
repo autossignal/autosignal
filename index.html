@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trader Signal Generator</title>
+<title>AutoSignal Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
@@ -37,7 +37,7 @@ pre{white-space:pre-wrap;font-size:14px;line-height:1.6;margin:0}
 
 <div class="header">
 <h1>📊 AutoSignal Generator</h1>
-<div>AutoSignal Trading Tool</div>
+<div>AutoTrading Tool</div>
 </div>
 
 <div class="container">
@@ -56,7 +56,7 @@ pre{white-space:pre-wrap;font-size:14px;line-height:1.6;margin:0}
 
 </div>
 
-<div class="footer">• Trader Signal Engine •</div>
+<div class="footer">• AutoSignal Engine •</div>
 
 <script>
 
@@ -148,7 +148,13 @@ btn.className="copy small copy-btn"
 btn.innerText="Copy"
 btn.onclick=()=>{
 navigator.clipboard.writeText(text)
-alert("Signal berhasil di copy 🚀")
+
+const original=btn.innerText
+btn.innerText="Copied ✓"
+
+setTimeout(()=>{
+btn.innerText=original
+},1500)
 }
 
 let pre=document.createElement("pre")
