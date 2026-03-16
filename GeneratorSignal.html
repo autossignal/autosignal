@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traderchology Signal Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:'Inter',sans-serif;
+background:#0f172a;
+color:white;
+}
+
+.header{
+padding:20px 30px;
+border-bottom:1px solid #1e293b;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#020617;
+}
+
+.header h1{
+margin:0;
+font-size:20px;
+}
+
+.container{
+padding:30px;
+max-width:1200px;
+margin:auto;
+}
+
+.card{
+background:#020617;
+padding:25px;
+border-radius:14px;
+border:1px solid #1e293b;
+margin-bottom:25px;
+}
+
+.controls{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:10px;
+}
+
+input,select{
+padding:10px 12px;
+border-radius:8px;
+border:none;
+background:#1e293b;
+color:white;
+}
+
+button{
+padding:10px 18px;
+border:none;
+border-radius:8px;
+background:#2563eb;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+
+button.copy{
+background:#16a34a;
+}
+
+button.clear{
+background:#ef4444;
+}
+
+pre{
+background:#020617;
+border:1px solid #1e293b;
+padding:20px;
+border-radius:12px;
+white-space:pre-wrap;
+max-height:600px;
+overflow:auto;
+font-size:14px;
+line-height:1.6;
+}
+
+.footer{
+text-align:center;
+font-size:12px;
+color:#94a3b8;
+padding:15px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>📊 Traderchology Signal Generator</h1>
+<div>Professional Trading Tool</div>
+</div>
+
+<div class="container">
+
+<div class="card">
+<h3>Generator Settings</h3>
+
+<div class="controls">
+<input type="date" id="dateInput">
+
+<select id="marketPair">
+<option value="2">2 Market per Signal</option>
+<option value="4">4 Market per Signal</option>
+</select>
+
+<button onclick="generate()">Generate Signal</button>
+<button class="copy" onclick="copyText()">Copy Output</button>
+<button class="clear" onclick="clearOutput()">Clear</button>
+</div>
+
+</div>
+
+<div class="card">
+<h3>Generated Signal</h3>
+<pre id="output"></pre>
+</div>
+
+</div>
+
+<div class="footer">
+Traderchology Signal Engine • Randomized Realistic Pattern
+</div>
+
+<script>
+
+const markets=[
+"ASIA COMPOSITE INDEX",
+"CRYPTO COMPOSITE INDEX",
+"EUROPE COMPOSITE INDEX",
+"NUSANTARA HALAL INDEX"
+];
+
+const months=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+
+function formatDate(dateStr){
+const d=new Date(dateStr);
+const day=d.getDate();
+const month=months[d.getMonth()];
+const year=d.getFullYear();
+return `${day} ${month} ${year}`;
+}
+
+function realisticSignal(prev1,prev2,stats){
+
+if(prev1===null) return Math.random()>0.5?"B":"S";
+
+let buy=stats.buy;
+let sell=stats.sell;
+
+let bias=0.5;
+
+if(buy-sell>=2) bias=0.35;
+if(sell-buy>=2) bias=0.65;
+
+if(prev1 && prev2 && prev1===prev2){
+return prev1==="B"?"S":"B";
+}
+
+return Math.random()<bias?"B":"S";
+}
+
+function disclaimer(){
+return `Disclaimer:\n⚠️ Signal Hanya Alat Bantu Untuk Kita Analisa\n\n⚠️ Ambil Signal Secukupnya\n\n⚠️ Jika Sudah Mencapai Target Harian "STOP"\n\n⛔️ Apabila Sebelum Signal terjadi Doji, jangan open posisi\n\n⛔️ Jika Trend kuat kita FTT (Follow The Trend) ex. indikasi 3 candle/lebih sebelum signal warna sama.\n\n⛔️ Apabila signal menunjukkan Buy dan trend kuat turun kita Open Sell dan Sebaliknya. Intinya trend jangan di lawan ya\n\nBelum Tau Cara Open Signal ?\n\nKlik Disini (https://t.me/gustavotraderrr/60)`;
+}
+
+function generate(){
+
+const rawDate=document.getElementById("dateInput").value;
+if(!rawDate){alert("Pilih tanggal terlebih dahulu");return;}
+
+const pair=parseInt(document.getElementById("marketPair").value);
+
+const date=formatDate(rawDate);
+
+let result="";
+let hour=0;
+
+for(let block=0;block<24/pair;block++){
+
+result+=`🏆 SIGNAL ${date} 🏆\n\n`;
+result+=`🕐 ZONA WAKTU WIB (GMT+7)\n`;
+result+=`🕐 DURASI 1 MENIT\n`;
+result+=`⚠️ MAX K2\n\n`;
+
+for(let mkt=0;mkt<pair;mkt++){
+
+const market=markets[(block*pair+mkt)%4];
+const start=hour.toString().padStart(2,'0');
+
+result+=`${market} (${start}:00 – ${start}:55)\n\n`;
+
+let prev1=null;
+let prev2=null;
+let stats={buy:0,sell:0};
+
+for(let m=0;m<60;m+=5){
+
+let signal=realisticSignal(prev1,prev2,stats);
+
+let time=`${hour.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`;
+
+result+=`${time} ${signal}\n`;
+
+if(signal==="B") stats.buy++; else stats.sell++;
+
+prev2=prev1;
+prev1=signal;
+
+}
+
+result+=`\n`;
+
+hour++;
+
+}
+
+result+=disclaimer();
+result+=`\n\n======================================\n\n`;
+
+}
+
+document.getElementById("output").textContent=result;
+
+}
+
+function copyText(){
+
+const text=document.getElementById("output").textContent;
+
+navigator.clipboard.writeText(text);
+
+alert("Signal berhasil di copy 🚀");
+
+}
+
+function clearOutput(){
+
+document.getElementById("output").textContent="";
+
+}
+
+</script>
+
+</body>
+</html>
